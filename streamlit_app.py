@@ -197,11 +197,13 @@ def load_model():
         custom_objects = {'Symlet2PoolingLayer': Symlet2PoolingLayer}
         model = tf.keras.models.load_model(
             'symmrnet_symlet2_3blocks.h5', 
-            custom_objects=custom_objects
+            custom_objects=custom_objects,
+            compile=False  # ป้องกันปัญหา optimizer compatibility
         )
         return model
     except Exception as e:
         st.error(f"Error loading model: {e}")
+        st.write("ปัญหาที่พบ:", str(e))
         return None
 
 def preprocess_image(image):
