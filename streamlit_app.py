@@ -8,7 +8,7 @@ from tensorflow.keras.layers import Layer
 
 # Set page config
 st.set_page_config(
-    page_title="Ultrasound Breast Cancer Classification", 
+    page_title="Ultrasound Breast Cancer Classification by MIDTHaI", 
     page_icon="🩺",
     layout="wide"
 )
@@ -442,9 +442,9 @@ def main():
     
     # Sidebar with information
     with st.sidebar:
-        st.header("ℹ️ About")
+        st.header("ℹ️ About MIDTHaI")
         st.write("""
-        This application uses a **VMC-Net** model with Advanced Learnable Entropy Pooling 
+        This application uses a Entropy Weighted Hybrid Pooling model in CNN
         to classify ultrasound breast images as **Benign** or **Malignant**.
         """)
         
