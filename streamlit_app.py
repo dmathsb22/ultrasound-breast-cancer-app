@@ -201,6 +201,8 @@ def load_model():
         st.write("**Available model files should be:**")
         st.write("- symmrnet_symlet2_3blocks.h5")
         st.write("- ultrasound_model_vmc_net.h5")
+        st.write("**Fallback**: Using demo mode with random predictions")
+        return None
         return model
         
     except Exception as e:
