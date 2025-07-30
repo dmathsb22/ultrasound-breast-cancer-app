@@ -176,14 +176,31 @@ def load_model():
             'AdvancedLearnableEntropyPooling2D': AdvancedLearnableEntropyPooling2D
         }
         
-        # Try to load the model
-        model = tf.keras.models.load_model(
-            'symmrnet_symlet2_3blocks.h5', 
-            custom_objects=custom_objects,
-            compile=False
-        )
+        # Try to load the model with multiple attempts
+        model_files = ['symmrnet_symlet2_3blocks.h5', 'ultrasound_model_vmc_net.h5']
         
-        st.success("✅ Model loaded successfully!")
+        for model_file in model_files:
+            try:
+                st.write(f"🔄 Trying to load: {model_file}")
+                model = tf.keras.models.load_model(
+                    model_file, 
+                    custom_objects=custom_objects,
+                    compile=False
+                )
+                st.success(f"✅ Model loaded successfully: {model_file}")
+                return model
+            except FileNotFoundError:
+                st.warning(f"📁 File not found: {model_file}")
+                continue
+            except Exception as e:
+                st.error(f"❌ Error loading {model_file}: {str(e)}")
+                continue
+        
+        # If no model loaded successfully
+        st.error("❌ Could not load any model file")
+        st.write("**Available model files should be:**")
+        st.write("- symmrnet_symlet2_3blocks.h5")
+        st.write("- ultrasound_model_vmc_net.h5")
         return model
         
     except Exception as e:
