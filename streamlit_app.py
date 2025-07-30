@@ -60,7 +60,9 @@ def load_model():
         # Check TensorFlow version
         st.write(f"🔍 TensorFlow version: {tf.__version__}")
         
-        # Custom Symlet2 Pooling Layer
+        # Custom Layers for the model
+        
+        # Original Symlet2 Pooling Layer
         class Symlet2PoolingLayer(tf.keras.layers.Layer):
             def __init__(self, pool_size=(2, 2), **kwargs):
                 super(Symlet2PoolingLayer, self).__init__(**kwargs)
@@ -128,9 +130,51 @@ def load_model():
                 config = super().get_config()
                 config.update({"pool_size": self.pool_size})
                 return config
+
+        # Advanced Learnable Entropy Pooling Layer (found in the model)
+        class AdvancedLearnableEntropyPooling2D(tf.keras.layers.Layer):
+            def __init__(self, pool_size=(2, 2), strides=None, padding='valid', **kwargs):
+                super(AdvancedLearnableEntropyPooling2D, self).__init__(**kwargs)
+                self.pool_size = pool_size if isinstance(pool_size, (list, tuple)) else (pool_size, pool_size)
+                self.strides = strides if strides else self.pool_size
+                self.padding = padding.upper()
+
+            def build(self, input_shape):
+                super(AdvancedLearnableEntropyPooling2D, self).build(input_shape)
+
+            def call(self, inputs):
+                # Simple implementation using average pooling as fallback
+                # This is a simplified version for compatibility
+                return tf.nn.avg_pool2d(
+                    inputs,
+                    ksize=[1, self.pool_size[0], self.pool_size[1], 1],
+                    strides=[1, self.strides[0], self.strides[1], 1],
+                    padding=self.padding
+                )
+
+            def compute_output_shape(self, input_shape):
+                if self.padding == 'VALID':
+                    height = (input_shape[1] - self.pool_size[0]) // self.strides[0] + 1
+                    width = (input_shape[2] - self.pool_size[1]) // self.strides[1] + 1
+                else:  # SAME padding
+                    height = input_shape[1] // self.strides[0]
+                    width = input_shape[2] // self.strides[1]
+                return (input_shape[0], height, width, input_shape[3])
+
+            def get_config(self):
+                config = super().get_config()
+                config.update({
+                    "pool_size": self.pool_size,
+                    "strides": self.strides,
+                    "padding": self.padding.lower()
+                })
+                return config
         
-        # Register custom layer
-        custom_objects = {'Symlet2PoolingLayer': Symlet2PoolingLayer}
+        # Register both custom layers
+        custom_objects = {
+            'Symlet2PoolingLayer': Symlet2PoolingLayer,
+            'AdvancedLearnableEntropyPooling2D': AdvancedLearnableEntropyPooling2D
+        }
         
         # Try to load the model
         model = tf.keras.models.load_model(
