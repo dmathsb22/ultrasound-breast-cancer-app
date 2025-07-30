@@ -514,7 +514,7 @@ def main():
             help="Upload a grayscale or color ultrasound image"
         )
         st.info("🖼️ [คลิกดูตัวอย่างภาพ](https://drive.google.com/drive/folders/1H2ArmkSydpRpZe-7Uew5DhN-aNZqvENN?usp=drive_link)")
-    )
+    
         if uploaded_file is not None:
             # Display uploaded image
             image = Image.open(uploaded_file)
